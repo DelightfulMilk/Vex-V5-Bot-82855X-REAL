@@ -60,6 +60,15 @@ void disabled() {}
 
 void competition_initialize() {}
 
+void autonomous() {
+    timer.reset();
+    timer.start();
+    if (timer.get_time() < 2000) { //change 2000ms to desired time
+        intakeMotors.move_voltage(12000); // intake on for 2 seconds
+    } else {
+        intakeMotors.move_voltage(0); // stop intake after 2 seconds
+    }
+}
 void opcontrol() {
     // controller
     // R2: Lift Up
