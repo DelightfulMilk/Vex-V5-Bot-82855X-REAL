@@ -11,7 +11,7 @@ pros::MotorGroup intakeMotors ({9}, pros::MotorGearset::blue);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, 
- &rightMotors, 
+&rightMotors, 
 13.5, // 13.5 inch track width
 lemlib::Omniwheel::OLD_325, // using old 3.25" omnis
 360, // drivetrain rpm is 360
@@ -21,39 +21,40 @@ lemlib::Omniwheel::OLD_325, // using old 3.25" omnis
 
 // joystick deadzone code
 // input curve for throttle input during driver control
-lemlib::ExpoDriveCurve throttleCurve(3, // joystick deadband out of 127
-10, // minimum output where drivetrain will move out of 127
-1.019 // expo curve gain
+lemlib::ExpoDriveCurve throttle_curve(3, // joystick deadband out of 127
+                                     10, // minimum output where drivetrain will move out of 127
+                                     1.019 // expo curve gain
 );
 
 // input curve for steer input during driver control
-lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
-10, // minimum output where drivetrain will move out of 127
-1.019 // expo curve gain
+lemlib::ExpoDriveCurve steer_curve(3, // joystick deadband out of 127
+                                  10, // minimum output where drivetrain will move out of 127
+                                  1.019 // expo curve gain
+);
+
+lemlib::ControllerSettings lateral_controller(0, 0, 0, 0, 0, 0, 0, 0, 0);
+lemlib::ControllerSettings angular_controller(0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+lemlib::OdomSensors sensors(
+    nullptr, // vertical tracking wheel 1
+    nullptr, // vertical tracking wheel 2
+    nullptr, // horizontal tracking wheel 1
+    nullptr, // horizontal tracking wheel 2
+    nullptr  // inertial sensor
 );
 
 // create the chassis
-lemlib::Chassis chassis(drivetrain, linearController, angularController, sensors, &throttleCurve, &steerCurve);
+lemlib::Chassis chassis(drivetrain, // drivetrain settings
+                        lateral_controller, // lateral PID settings
+                        angular_controller, // angular PID settings
+                        sensors, // odometry sensors
+                        &throttle_curve, // throttle input curve
+                        &steer_curve // steer input curve
+                        );
 
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
-    chassis.calibrate(); // calibrate sensors
-
-    pros::Task screenTask([&]() {
-        while (true) {
-            // print robot location to the brain screen
-            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-            // log position telemetry
-            lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
-            // delay to save resources
-            pros::delay(50);
-        }
-    });
 }
-
-
 
 void disabled() {}
 
@@ -61,6 +62,11 @@ void competition_initialize() {}
 
 void opcontrol() {
     // controller
+    // R2: Lift Up
+    // R1: Lift Down
+    // A: Intake On/Off
+    // X: Wrist Move
+    // Y: Claw Toggle
     // loop to continuously update motors
 
     //sets to 0 degrees claw
@@ -76,9 +82,9 @@ void opcontrol() {
         // get joystick positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-        // move the chassis with curvature drive
+
         chassis.arcade(leftY, rightX);
-        // delay to save resources
+
 		// lift up and down
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
 			liftMotors.move_voltage(12000);
@@ -116,10 +122,7 @@ void opcontrol() {
         } else {
             clawMotors.move_absolute(0, 200);    // 0 to open claw
         }
-        }
-
-
-
+        
         pros::delay(10);
            
     }
