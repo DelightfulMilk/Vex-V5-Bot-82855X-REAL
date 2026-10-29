@@ -12,7 +12,7 @@ pros::MotorGroup intakeMotors ({9}, pros::MotorGearset::blue);
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, 
 &rightMotors, 
-13.5, // 13.5 inch track width
+13, // 13 inch track width
 lemlib::Omniwheel::OLD_325, // using old 3.25" omnis
 360, // drivetrain rpm is 360
 2 // trac wheels = 0, horizontal drift offset
