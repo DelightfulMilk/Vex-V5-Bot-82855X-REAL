@@ -54,7 +54,7 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
-    int toggler = 0; // toggler varialbe set 0 bc it is like 17 million sometimes idk why
+    int toggler = -117901063; // toggler varialbe set 0 bc it is like 17 million sometimes idk why
 }
 
 void disabled() {}
