@@ -54,6 +54,7 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
+    int toggler = 0; // toggler varialbe set 0 bc it is like 17 million sometimes idk why
 }
 
 void disabled() {}
@@ -106,6 +107,7 @@ void opcontrol() {
             //toggler queue
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
 			int toggler = toggler +1;
+            pros::delay(100);
              pros::lcd::print(1, "toggler: %d", toggler);
         }
          //wrist movements
