@@ -79,7 +79,6 @@ void opcontrol() {
     //sets to 0 degrees claw
     wristMotors.tare_position();
     clawMotors.tare_position();
-    toggleMotor.tare_position();
     
     //claw variables
     bool isClawClosed = false;
@@ -110,19 +109,12 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             if (!wasAPressed) { 
                 toggler = toggler + 1; // Count immediately when the button goes down! (1 click)
-                pros::lcd::print(3, "togglerqueue: %d", toggler);
+                pros::lcd::print(3, "toggler: %d", toggler);
              wasAPressed = true;    // This locks the code so it can't repeat while held
-         }
+            }
         } else {
             wasAPressed = false;       // Unlocks it only when you let go of the button
         }
-        // if (toggler >= 3) { // if toggler is 1 or more, run intake
-            // toggleMotor.move_absolute(360, 200); // run intake for 1 rotation at 200 rpm
-           //  toggler = toggler - 1; // decrement toggler by 1
-           // pros::delay(2000); // wait 2 seconds for intake to finish
-       //  } else {
-       //  }
-
-
+        pros::delay(20);   
     }
 }
