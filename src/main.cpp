@@ -54,6 +54,7 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
+    pros::lcd::print(1, "Hello World!"); // Prints hello world test 
 }
 
 void disabled() {}
@@ -106,7 +107,7 @@ void opcontrol() {
             //toggler queue
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
 			int toggler = toggler +1;
-            
+            pros::screen::print(pros::text_format_e_t::E_TEXT_MEDIUM, 3, "t");
         }
          //wrist movements
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
