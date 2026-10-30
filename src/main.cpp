@@ -124,13 +124,5 @@ void opcontrol() {
             pros::delay(1000); // wait 1 second for toggler to finish
         } else {
         }
-        
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
-            togglercontspin = 1; // set togglercontspin to 1 to indicate that the toggler is spinning
-        } else {
-            togglercontspin = 0; // set togglercontspin to 0 to indicate that the toggler is not spinning
-        }
-        pros::lcd::print(4, "togglercontspin: %d", togglercontspin);
-           
     }
 }
