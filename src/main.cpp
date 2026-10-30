@@ -118,13 +118,13 @@ void opcontrol() {
         }
 
         if (toggler >= 1) { // if toggler is 1 or more, run intake
-            toggleMotor.move_absolute(120, 200); // run intake for 1 rotation at 200 rpm
+            // toggleMotor.move_absolute(120, 200); // run intake for 1 rotation at 200 rpm
             toggler = toggler - 1; // decrement toggler by 1
             pros::delay(1000); // wait 1 second for toggler to finish
-            toggleMotor.move_absolute(0, 200); // return to 0 position at 200 rpm
+            // toggleMotor.move_absolute(0, 200); // return to 0 position at 200 rpm
         } else {
         }
-          
+
         pros::delay(20);
            
     }
