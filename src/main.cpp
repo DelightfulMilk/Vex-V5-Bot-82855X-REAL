@@ -119,11 +119,10 @@ void opcontrol() {
         
         if (toggler >=1) {
             // toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
-            pros::delay(200);
             // toggleMotor.move_absolute(0, 200); // move toggle to 0 degrees
             toggler = toggler - 1;
+            pros::delay(200);
         } else if (toggler == 0) {
-            toggleMotor.move_absolute(0, 200); // move toggle to 0 degrees
         }
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
             togglerhold = 1; 
