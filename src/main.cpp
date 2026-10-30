@@ -7,7 +7,7 @@ pros::MotorGroup rightMotors({3, 4}, pros::MotorGearset::blue);
 pros::MotorGroup clawMotors ({5}, pros::MotorGearset::green);
 pros::MotorGroup wristMotors ({6}, pros::MotorGearset::green);
 pros::MotorGroup liftMotors ({7, -8}, pros::MotorGearset::red);
-pros::MotorGroup intakeMotors ({9}, pros::MotorGearset::blue);
+pros::MotorGroup toggleMotor ({9}, pros::MotorGearset::blue);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, 
@@ -61,17 +61,19 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    intakeMotors.move_voltage(12000); 
-    pros::delay(2000); 
-    intakeMotors.move_voltage(0); 
+    leftMotors.move_voltage(-12000); // move drivetrain back
+    rightMotors.move_voltage(-12000);  // move drivetrain back
+    toggleMotor.move_voltage(12000); // turn on toggle
+    pros::delay(2000); // wait 2s
+    toggleMotor.move_voltage(0); // turn off toggle
 }
 void opcontrol() {
     // controller
-    // R2: Lift Up
-    // R1: Lift Down
-    // A: Intake On/Off
-    // X: Wrist Move
-    // Y: Claw Toggle
+    // L1: Lift Up
+    // L2: Lift Down
+    // R1: Claw Open
+    // R2: Claw Close
+    // A: Toggler for a certain amount. When button is pressed, queue a value that is executed only when the other vaue id one
     // loop to continuously update motors
 
     //sets to 0 degrees claw
@@ -101,11 +103,10 @@ void opcontrol() {
 		else {
 			liftMotors.move_voltage(0);
 		}
-            //intake movement
+            //toggler queue
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-			intakeMotors.move_voltage(12000);
-		} else {
-            intakeMotors.move_voltage(0);
+			int toggler = toggler +1;
+            
         }
          //wrist movements
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
