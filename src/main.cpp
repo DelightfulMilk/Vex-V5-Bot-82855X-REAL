@@ -61,13 +61,9 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    timer.reset();
-    timer.start();
-    if (timer.get_time() < 2000) { //change 2000ms to desired time
-        intakeMotors.move_voltage(12000); // intake on for 2 seconds
-    } else {
-        intakeMotors.move_voltage(0); // stop intake after 2 seconds
-    }
+    intakeMotors.move_voltage(12000); 
+    pros::delay(2000); 
+    intakeMotors.move_voltage(0); 
 }
 void opcontrol() {
     // controller
@@ -85,6 +81,8 @@ void opcontrol() {
     //claw variables
     bool isClawClosed = false;
     bool wasYPressed = false;
+    bool isIntakeOn = false;
+    bool wasAPressed = false;
 
 
     while (true) {
@@ -132,7 +130,7 @@ void opcontrol() {
             clawMotors.move_absolute(0, 200);    // 0 to open claw
         }
         
-        pros::delay(10);
+        pros::delay(20);
            
     }
 }
