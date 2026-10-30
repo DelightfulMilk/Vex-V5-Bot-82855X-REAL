@@ -117,11 +117,9 @@ void opcontrol() {
             wasAPressed = false;       // Unlocks it only when you let go of the button
         }
         
-        if (toggler >=1) {
+        if (toggler >=5) {
             // toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
-            // toggleMotor.move_absolute(0, 200); // move toggle to 0 degrees
             toggler = toggler - 1;
-            pros::delay(200);
         } else if (toggler == 0) {
         }
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
