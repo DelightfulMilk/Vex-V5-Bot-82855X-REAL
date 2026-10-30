@@ -88,7 +88,6 @@ void opcontrol() {
     bool isTogglerPressed = false;
     bool wasAPressed = false;
     int toggler = 0; // toggler varialbe set 0 bc it is like 17 million sometimes idk why
-    int togglercontspin = 0; // toggler continuous spin variable set to 0 bc it is like 17 million sometimes idk why
 
     while (true) {
         // get joystick positions
@@ -119,10 +118,11 @@ void opcontrol() {
         }
 
         if (toggler >= 1) { // if toggler is 1 or more, run intake
-            toggleMotor.move_absolute(120, 200); // run intake for 1/3 rotation at 200 rpm
+            // toggleMotor.move_absolute(120, 200); // run intake for 1/3 rotation at 200 rpm
             toggler = toggler - 1; // decrement toggler by 1
-            pros::delay(1000); // wait 1 second for toggler to finish
+            pros::delay(2000); // change this value after
         } else {
         }
     }
+    pros::delay(20); // delay to prevent wasted resources
 }
