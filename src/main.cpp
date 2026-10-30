@@ -81,7 +81,7 @@ void opcontrol() {
     clawMotors.tare_position();
     
     //claw variables
-    bool isClawClosed = false;
+    int isClawClosed = 0;
     bool wasYPressed = false;
     bool isIntakeOn = false;
     bool isTogglerPressed = false;
@@ -140,11 +140,11 @@ void opcontrol() {
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
             clawMotors.move_absolute(90, 200); // move claw to 90 degrees
-            isClawClosed = true;
+            isClawClosed = 1;
             pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             clawMotors.move_absolute(0, 200); // move claw to 0 degrees
-            isClawClosed = false;
+            isClawClosed = 0;
             pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
         }
 
