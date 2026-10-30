@@ -120,7 +120,7 @@ void opcontrol() {
         if (toggler >= 1) { // if toggler is 1 or more, run intake
             // toggleMotor.move_absolute(120, 200); // run intake for 1/3 rotation at 200 rpm
             toggler = toggler - 1; // decrement toggler by 1
-            pros::delay(2000); // change this value after
+            pros::delay(0); // change this value after
         } else {
         }
     }
