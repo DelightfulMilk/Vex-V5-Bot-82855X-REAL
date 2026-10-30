@@ -137,6 +137,25 @@ void opcontrol() {
             toggleMotor.move_voltage(0);
         }
 
+        // claw movements
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
+            if (!wasYPressed) { //boolean which checks if its closed or not
+                isClawClosed = !isClawClosed; // flip boolean state
+                wasYPressed = true;  // y is clicked 
+                pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
+            }
+        } else {
+            wasYPressed = false; // resets y clicked button 
+            pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
+        }
+
+        // actually closes it
+        if (isClawClosed) { //checks if claw is closed and if its not y closes it
+            clawMotors.move_absolute(-180, 200); // (-180) to close claw
+        } else {
+            clawMotors.move_absolute(0, 200);    // 0 to open claw
+        }
+
         pros::delay(20);   
     }
 }
