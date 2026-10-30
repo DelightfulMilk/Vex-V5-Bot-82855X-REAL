@@ -79,6 +79,7 @@ void opcontrol() {
     //sets to 0 degrees claw
     wristMotors.tare_position();
     clawMotors.tare_position();
+    toggleMotor.tare_position();
     
     //claw variables
     bool isClawClosed = false;
@@ -114,6 +115,12 @@ void opcontrol() {
          }
         } else {
             wasAPressed = false;       // Unlocks it only when you let go of the button
+        }
+
+        if (toggler >= 1) { // if toggler is 1 or more, run intake
+            toggleMotor.move_absolute(360, 200); // run intake for 1 rotation at 200 rpm
+        } else {
+            toggleMotor.move_absolute(0, 200); // return to 0 degrees at 200 rpm
         }
         
          //wrist movements
