@@ -106,7 +106,7 @@ void opcontrol() {
 		else {
 			liftMotors.move_voltage(0);
 		}
-        if (toggler <= 4) {
+        if (toggler == 0) {
              if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
                  if (!wasAPressed) { 
                  toggler = toggler + 1; // Count immediately when the button goes down! (1 click)
@@ -117,8 +117,8 @@ void opcontrol() {
              wasAPressed = false;       // Unlocks it only when you let go of the button
          }
         }
-        else if (toggler >= 5) {
-            // toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
+        else if (toggler >= 1) {
+            toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
             toggler = toggler - 1;
             pros::lcd::print(3, "toggler: %d", toggler);
         }
