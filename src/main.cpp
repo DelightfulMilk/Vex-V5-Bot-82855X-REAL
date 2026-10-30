@@ -118,6 +118,7 @@ void opcontrol() {
         }
         else if (toggler >= 1) {
             toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
+            pros::delay(100);
             toggler = toggler - 1;
             pros::lcd::print(3, "toggler: %d", toggler);
         }
