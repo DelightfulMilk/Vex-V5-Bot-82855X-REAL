@@ -106,7 +106,7 @@ void opcontrol() {
 		else {
 			liftMotors.move_voltage(0);
 		}
-            //toggler queue
+        //toggler queue
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             if (!wasAPressed) { 
                 toggler = toggler + 1; // Count immediately when the button goes down! (1 click)
@@ -118,7 +118,9 @@ void opcontrol() {
         }
         
         if (toggler >=1) {
-            toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
+            // toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
+            pros::delay(200);
+            // toggleMotor.move_absolute(0, 200); // move toggle to 0 degrees
             toggler = toggler - 1;
         } else if (toggler == 0) {
             toggleMotor.move_absolute(0, 200); // move toggle to 0 degrees
