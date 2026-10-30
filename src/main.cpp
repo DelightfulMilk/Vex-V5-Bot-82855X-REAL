@@ -106,20 +106,14 @@ void opcontrol() {
 			liftMotors.move_voltage(0);
 		}
             //toggler queue
-		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-            if (!wasAPressed) { //boolean which checks if its closed or not
-                isTogglerPressed = !isTogglerPressed; // flip boolean state
-                wasAPressed = true;  // a is clicked 
-            }
-        } else {
-            wasAPressed = false; // resets a clicked button 
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+            if (!wasAPressed) { 
+                toggler = toggler + 1; // Count immediately when the button goes down! (1 click)
+                pros::lcd::print(3, "toggler: %d", toggler);
+             wasAPressed = true;    // This locks the code so it can't repeat while held
          }
-            
-        if (isTogglerPressed) {
-            toggler = toggler +1; // queue
-            pros::delay(100);
-            pros::lcd::print(3, "toggler: %d", toggler);
         } else {
+            wasAPressed = false;       // Unlocks it only when you let go of the button
         }
         
          //wrist movements
