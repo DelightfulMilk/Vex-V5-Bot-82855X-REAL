@@ -109,12 +109,12 @@ void opcontrol() {
         if (toggler == 0) {
              if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
                  if (!wasAPressed) { 
-                 toggler = toggler + 1; // Count immediately when the button goes down! (1 click)
+                 toggler = toggler + 1; // 
                   pros::lcd::print(3, "toggler: %d", toggler);
-                 wasAPressed = true;    // This locks the code so it can't repeat while held
+                 wasAPressed = true;    // lock
                  }
             } else {
-             wasAPressed = false;       // Unlocks it only when you let go of the button
+             wasAPressed = false;
          }
         }
         else if (toggler >= 1) {
