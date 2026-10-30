@@ -86,7 +86,8 @@ void opcontrol() {
     bool isIntakeOn = false;
     bool isTogglerPressed = false;
     bool wasAPressed = false;
-    int toggler = 0; // toggler varialbe set 0 bc it is like 17 million sometimes idk why
+    int toggler = 0; // to
+    int togglerhold = 0; 
 
     while (true) {
         // get joystick positions
@@ -114,6 +115,14 @@ void opcontrol() {
             }
         } else {
             wasAPressed = false;       // Unlocks it only when you let go of the button
+        }
+
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+            togglerhold = 1; 
+            pros::lcd::print(4, "togglerhold: %d", togglerhold);
+        } else {
+            togglerhold = 0;
+            pros::lcd::print(4, "togglerhold: %d", togglerhold);
         }
         pros::delay(20);   
     }
