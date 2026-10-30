@@ -54,7 +54,6 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
-    int toggler = (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A));
 }
 
 void disabled() {}
@@ -86,8 +85,7 @@ void opcontrol() {
     bool wasYPressed = false;
     bool isIntakeOn = false;
     bool wasAPressed = false;
-    int toggler = 0; // toggler varialbe set 0 bc it is like 17 million sometimes idk why
-
+    int toggler = (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)); // toggler varialbe set 0 bc it is like 17 million sometimes idk why
 
     while (true) {
         // get joystick positions
