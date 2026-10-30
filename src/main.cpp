@@ -109,7 +109,7 @@ void opcontrol() {
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
 			int toggler = (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A));
             pros::delay(100);
-             pros::lcd::print(1, "toggler: %d", toggler);
+             pros::lcd::print(3, "toggler: %d", toggler);
         }
          //wrist movements
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
