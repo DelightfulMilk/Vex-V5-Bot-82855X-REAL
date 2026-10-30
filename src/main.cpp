@@ -106,7 +106,7 @@ void opcontrol() {
 		else {
 			liftMotors.move_voltage(0);
 		}
-        if (toggler >= 1) {
+        if (toggler == 0) {
              if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
                  if (!wasAPressed) { 
                  toggler = toggler + 1; // Count immediately when the button goes down! (1 click)
