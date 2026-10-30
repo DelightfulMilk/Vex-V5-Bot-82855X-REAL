@@ -84,6 +84,7 @@ void opcontrol() {
     bool isClawClosed = false;
     bool wasYPressed = false;
     bool isIntakeOn = false;
+    bool isTogglerPressed = false;
     bool wasAPressed = false;
     int toggler = 0; // toggler varialbe set 0 bc it is like 17 million sometimes idk why
 
@@ -106,6 +107,13 @@ void opcontrol() {
 		}
             //toggler queue
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+            if (!wasAPressed) { //boolean which checks if its closed or not
+                isTogglerPressed = !isTogglerPressed; // flip boolean state
+                wasAPressed = true;  // a is clicked 
+            }
+            else {
+                wasAPressed = false; // resets a clicked button 
+            }
             toggler = toggler +1; // queue
             pros::delay(100);
             pros::lcd::print(3, "toggler: %d", toggler);
