@@ -85,7 +85,7 @@ void opcontrol() {
     bool wasYPressed = false;
     bool isIntakeOn = false;
     bool wasAPressed = false;
-    int toggler = (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)); // toggler varialbe set 0 bc it is like 17 million sometimes idk why
+    int toggler = 0; // toggler varialbe set 0 bc it is like 17 million sometimes idk why
 
     while (true) {
         // get joystick positions
@@ -106,7 +106,7 @@ void opcontrol() {
 		}
             //toggler queue
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-            int toggler = toggler +1; // queue
+            toggler = toggler +1; // queue
             pros::delay(100);
             pros::lcd::print(3, "toggler: %d", toggler);
         }
