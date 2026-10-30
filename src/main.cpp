@@ -106,21 +106,20 @@ void opcontrol() {
 		else {
 			liftMotors.move_voltage(0);
 		}
-        //toggler queue
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-            if (!wasAPressed) { 
-                toggler = toggler + 1; // Count immediately when the button goes down! (1 click)
-                pros::lcd::print(3, "toggler: %d", toggler);
-             wasAPressed = true;    // This locks the code so it can't repeat while held
-            }
-        } else {
-            wasAPressed = false;       // Unlocks it only when you let go of the button
+        if (toggler >= 1) {
+             if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+                 if (!wasAPressed) { 
+                 toggler = toggler + 1; // Count immediately when the button goes down! (1 click)
+                  pros::lcd::print(3, "toggler: %d", toggler);
+                 wasAPressed = true;    // This locks the code so it can't repeat while held
+                 }
+            } else {
+             wasAPressed = false;       // Unlocks it only when you let go of the button
+         }
         }
-        
-        if (toggler >=5) {
+        else if (toggler >= 1) {
             // toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
             toggler = toggler - 1;
-        } else if (toggler == 0) {
         }
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
             togglerhold = 1; 
