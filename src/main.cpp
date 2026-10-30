@@ -111,18 +111,17 @@ void opcontrol() {
                 isTogglerPressed = !isTogglerPressed; // flip boolean state
                 wasAPressed = true;  // a is clicked 
             }
-            else {
-                wasAPressed = false; // resets a clicked button 
-            }
-
+        } else {
+            wasAPressed = false; // resets a clicked button 
+         }
+            
         if (isTogglerPressed) {
-             toggler = toggler +1; // queue
+            toggler = toggler +1; // queue
             pros::delay(100);
             pros::lcd::print(3, "toggler: %d", toggler);
         } else {
-        
         }
-
+        
          //wrist movements
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
             wristMotors.move_absolute(-450, 200); //90 degees down at 200rpm
