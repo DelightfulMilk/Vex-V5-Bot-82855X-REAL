@@ -117,7 +117,7 @@ void opcontrol() {
              wasAPressed = false;       // Unlocks it only when you let go of the button
          }
         }
-        else if (toggler >= 1) {
+        else if (toggler >= 5) {
             // toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
             toggler = toggler - 1;
         }
