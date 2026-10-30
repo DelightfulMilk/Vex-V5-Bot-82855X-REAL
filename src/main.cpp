@@ -88,6 +88,7 @@ void opcontrol() {
     bool isTogglerPressed = false;
     bool wasAPressed = false;
     int toggler = 0; // toggler varialbe set 0 bc it is like 17 million sometimes idk why
+    int togglercontspin = 0; // toggler continuous spin variable set to 0 bc it is like 17 million sometimes idk why
 
     while (true) {
         // get joystick positions
@@ -110,7 +111,7 @@ void opcontrol() {
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             if (!wasAPressed) { 
                 toggler = toggler + 1; // Count immediately when the button goes down! (1 click)
-                pros::lcd::print(3, "toggler: %d", toggler);
+                pros::lcd::print(3, "togglerqueue: %d", toggler);
              wasAPressed = true;    // This locks the code so it can't repeat while held
          }
         } else {
@@ -118,35 +119,18 @@ void opcontrol() {
         }
 
         if (toggler >= 1) { // if toggler is 1 or more, run intake
-            toggleMotor.move_absolute(360, 200); // run intake for 1 rotation at 200 rpm
+            toggleMotor.move_absolute(120, 200); // run intake for 1/3 rotation at 200 rpm
+            toggler = toggler - 1; // decrement toggler by 1
+            pros::delay(1000); // wait 1 second for toggler to finish
         } else {
-            toggleMotor.move_absolute(0, 200); // return to 0 degrees at 200 rpm
         }
         
-         //wrist movements
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
-            wristMotors.move_absolute(-450, 200); //90 degees down at 200rpm
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+            togglercontspin = 1; // set togglercontspin to 1 to indicate that the toggler is spinning
         } else {
-            wristMotors.move_absolute(0, 200); // return to zero degrees at 200rpm
+            togglercontspin = 0; // set togglercontspin to 0 to indicate that the toggler is not spinning
         }
-        // claw movements
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-            if (!wasYPressed) { //boolean which checks if its closed or not
-                isClawClosed = !isClawClosed; // flip boolean state
-                wasYPressed = true;  // y is clicked 
-            }
-        } else {
-            wasYPressed = false; // resets y clicked button 
-        }
-
-        // actually closes it
-        if (isClawClosed) { //checks if claw is closed and if its not y closes it
-            clawMotors.move_absolute(-180, 200); // (-180) to close claw
-        } else {
-            clawMotors.move_absolute(0, 200);    // 0 to open claw
-        }
-        
-        pros::delay(20);
+        pros::lcd::print(4, "togglercontspin: %d", togglercontspin);
            
     }
 }
