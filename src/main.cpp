@@ -98,14 +98,15 @@ void opcontrol() {
         chassis.arcade(leftY, rightX);
 
 		// lift up and down
-		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-			liftMotors.move_voltage(12000);
-		} else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            liftMotors.move_voltage(-12000);
+		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+			liftMotors.move_voltage(-12000);
+		} else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+            liftMotors.move_voltage(12000);
             }
 		else {
 			liftMotors.move_voltage(0);
 		}
+
         if (toggler == 0) {
              if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
                  if (!wasAPressed) { 
@@ -137,23 +138,14 @@ void opcontrol() {
             toggleMotor.move_voltage(0);
         }
 
-        // claw movements
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-            if (!wasYPressed) { //boolean which checks if its closed or not
-                isClawClosed = !isClawClosed; // flip boolean state
-                wasYPressed = true;  // y is clicked 
-                pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
-            }
-        } else {
-            wasYPressed = false; // resets y clicked button 
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+            clawMotors.move_absolute(90, 200); // move claw to 90 degrees
+            isClawClosed = true;
             pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
-        }
-
-        // actually closes it
-        if (isClawClosed) { //checks if claw is closed and if its not y closes it
-            clawMotors.move_absolute(-180, 200); // (-180) to close claw
-        } else {
-            clawMotors.move_absolute(0, 200);    // 0 to open claw
+        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+            clawMotors.move_absolute(0, 200); // move claw to 0 degrees
+            isClawClosed = false;
+            pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
         }
 
         pros::delay(20);   
