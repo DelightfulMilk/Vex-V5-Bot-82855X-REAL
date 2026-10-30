@@ -61,11 +61,9 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    leftMotors.move_voltage(-12000); // move drivetrain back
-    rightMotors.move_voltage(-12000);  // move drivetrain back
-    toggleMotor.move_voltage(12000); // turn on toggle
-    pros::delay(2000); // wait 2s
-    toggleMotor.move_voltage(0); // turn off toggle
+    toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
+    leftMotors.move_voltage(12000); // move left motors forward
+    rightMotors.move_voltage(12000); // move right motors forward
 }
 void opcontrol() {
     // controller
@@ -139,12 +137,12 @@ void opcontrol() {
         }
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            // clawMotors.move_absolute(90, 200); // move claw to 90 degrees
+            clawMotors.move_absolute(90, 200); // move claw to 90 degrees
             isClawClosed = 1;
             pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
         } 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            // clawMotors.move_absolute(0, 200); // move claw to 0 degrees
+            clawMotors.move_absolute(0, 200); // move claw to 0 degrees
             isClawClosed = 0;
             pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
         }
