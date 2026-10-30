@@ -116,7 +116,13 @@ void opcontrol() {
         } else {
             wasAPressed = false;       // Unlocks it only when you let go of the button
         }
-
+        
+        if (toggler >=1) {
+            toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
+            toggler = toggler - 1;
+        } else if (toggler == 0) {
+            toggleMotor.move_absolute(0, 200); // move toggle to 0 degrees
+        }
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
             togglerhold = 1; 
             pros::lcd::print(4, "togglerhold: %d", togglerhold);
@@ -124,6 +130,13 @@ void opcontrol() {
             togglerhold = 0;
             pros::lcd::print(4, "togglerhold: %d", togglerhold);
         }
+
+        if (togglerhold == 1) {
+            toggleMotor.move_voltage(12000);
+        } else if (togglerhold == 0) {
+            toggleMotor.move_voltage(0);
+        }
+
         pros::delay(20);   
     }
 }
