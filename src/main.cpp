@@ -87,8 +87,8 @@ void opcontrol() {
         if (rightPower > 127) rightPower = 127;
         if (rightPower < -127) rightPower = -127;
 
-        leftMotors.move(leftPower * 0.8);
-        rightMotors.move(rightPower * 0.8);
+        leftMotors.move(leftPower);
+        rightMotors.move(rightPower);
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
             liftMotors.move_voltage(9000);
