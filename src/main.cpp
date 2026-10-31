@@ -7,7 +7,6 @@ pros::MotorGroup rightMotors({3, 4}, pros::MotorGearset::blue);
 pros::MotorGroup clawMotors ({5}, pros::MotorGearset::green);
 pros::MotorGroup liftMotors ({7, -8}, pros::MotorGearset::red);
 pros::MotorGroup toggleMotor ({9}, pros::MotorGearset::blue);
-pros::Motor liftTrack ({7}, pros::MotorGearset::red);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, 
@@ -95,7 +94,7 @@ void opcontrol() {
         pros::lcd::print(2, "leftY: %d", leftY);
         chassis.arcade(leftY, rightX);
 
-        double lift_motor_pos = liftTrack.get_position(0);
+        double lift_motor_pos = liftMotors.get_position(0);
         pros::lcd::print(6, "lift motors pos: %f", lift_motor_pos);
 
 		// lift up and down
@@ -149,13 +148,13 @@ void opcontrol() {
         }
 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-            // clawMotors.move_absolute(90, 200); // move claw to 90 degrees
+            clawMotors.move_absolute(90, 200); // move claw to 90 degrees
             isClawClosed = 1;
             pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
             pros::delay(100);
         } 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-            // clawMotors.move_absolute(0, 200); // move claw to 0 degrees
+            clawMotors.move_absolute(0, 200); // move claw to 0 degrees
             isClawClosed = 0;
             pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
             pros::delay(100);
