@@ -53,8 +53,6 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
-    // chassis.calibrate(); // calibrate the chassis sensors
-    pros::lcd::print(7, "Chassis calibrated");
 }
 
 void disabled() {}
@@ -117,44 +115,50 @@ void opcontrol() {
 		else {
 			liftMotors.move_voltage(0);
 		}
-      
+
+        if (toggler == 0) {
+             if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+                 if (!wasAPressed) { 
+                 toggler = toggler + 1; // 
+                  pros::lcd::print(3, "toggler: %d", toggler);
+                 wasAPressed = true;    // lock
+                 }
+            } else {
+             wasAPressed = false;
+         }
+        }
+        else if (toggler >= 1) {
+            toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
+            pros::delay(100);
+            toggler = toggler - 1;
+            pros::lcd::print(3, "toggler: %d", toggler);
+        }
+    
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
             togglerhold = 1; 
+            pros::lcd::print(4, "togglerhold: %d", togglerhold);
         } else {
             togglerhold = 0;
-        }
-        pros::lcd::print(4, "togglerhold: %d", togglerhold);
-
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-            if (!wasAPressed) { 
-                toggler = toggler + 1; 
-                pros::lcd::print(3, "toggler: %d", toggler);
-                wasAPressed = true; 
-            }
-        } else {
-            wasAPressed = false; 
+            pros::lcd::print(4, "togglerhold: %d", togglerhold);
         }
 
         if (togglerhold == 1) {
             toggleMotor.move_voltage(12000);
-            toggler = 0; 
-        } else if (toggler >= 1) {
-            toggleMotor.move_absolute(120, 200); 
-            if (std::abs(toggleMotor.get_position(0) - 120) < 5) {
-                toggler = toggler - 1;
-                pros::lcd::print(3, "toggler: %d", toggler);
-            }
-        } else {
+        } else if (togglerhold == 0) {
             toggleMotor.move_voltage(0);
         }
-    
+
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+            // clawMotors.move_absolute(90, 200); // move claw to 90 degrees
             isClawClosed = 1;
             pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
+            pros::delay(100);
         } 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+            // clawMotors.move_absolute(0, 200); // move claw to 0 degrees
             isClawClosed = 0;
             pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
+            pros::delay(100);
         }
 
         pros::delay(20);   
