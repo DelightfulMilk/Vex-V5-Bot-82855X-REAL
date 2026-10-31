@@ -79,7 +79,7 @@ void opcontrol() {
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
         int throttle = expoCurve(leftY, THROTTLE_DEADBAND, THROTTLE_MIN_OUT, THROTTLE_CURVE) * 0.5;
-        int turn     = expoCurve(rightX, TURN_DEADBAND, TURN_MIN_OUT, TURN_CURVE) * 0.5;
+        int turn = expoCurve(rightX, TURN_DEADBAND, TURN_MIN_OUT, TURN_CURVE) * 0.5;
 
         int leftPower = throttle + turn;
         int rightPower = (throttle - turn) * 1.5;
