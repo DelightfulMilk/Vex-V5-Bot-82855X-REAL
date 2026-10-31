@@ -82,8 +82,8 @@ void opcontrol() {
     bool bToggleState = false;
 
     while (true) {
-        int leftY = -controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = -controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int leftY = -controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int rightX = -controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 
         // change throttle to change the drivetrain speed and turn
         int throttle = (leftY * 0.5);
