@@ -1,5 +1,6 @@
 #include "main.h"
 #include "lemlib/api.hpp"
+#include <cmath>
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
@@ -31,6 +32,26 @@ lemlib::Chassis chassis(drivetrain,
                         &steer_curve
 );
 
+const int    THROTTLE_DEADBAND = 3;
+const int    THROTTLE_MIN_OUT  = 10;
+const double THROTTLE_CURVE    = 1.019;
+
+const int    TURN_DEADBAND = 3;
+const int    TURN_MIN_OUT  = 10;
+const double TURN_CURVE    = 1.019;
+
+int expoCurve(int input, int deadband, int minOutput, double curve) {
+    if (std::abs(input) <= deadband) return 0;
+
+    int sign = (input > 0) ? 1 : -1;
+    double x = std::abs(input);
+
+    double curved = std::pow(curve, x - 127) * x;
+    double output = minOutput + (127.0 - minOutput) * curved / 127.0;
+
+    return sign * (int)output;
+}
+
 void initialize() {
     pros::lcd::initialize();
     chassis.calibrate();
@@ -47,10 +68,11 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    toggleMotor.move_absolute(120, 200);
+    toggleMotor.move_voltage(6000);
+    pros::delay(200);
     leftMotors.move_voltage(12000);
     rightMotors.move_voltage(12000);
-    pros::delay(1000);
+    pros::delay(2000);
     leftMotors.move_voltage(0);
     rightMotors.move_voltage(0);
 }
@@ -60,12 +82,11 @@ void opcontrol() {
     bool isAbsoluteTargetSet = false;
 
     while (true) {
-        // ---------- DRIVE ----------
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        int throttle = leftY * 0.5;
-        int turn = rightX * 0.5;
+        int throttle = expoCurve(leftY, THROTTLE_DEADBAND, THROTTLE_MIN_OUT, THROTTLE_CURVE) * 0.5;
+        int turn     = expoCurve(rightX, TURN_DEADBAND, TURN_MIN_OUT, TURN_CURVE) * 0.5;
 
         int leftPower = throttle + turn;
         int rightPower = (throttle - turn) * 1.5;
@@ -76,7 +97,6 @@ void opcontrol() {
         leftMotors.move(leftPower);
         rightMotors.move(rightPower);
 
-        // ---------- LIFT ----------
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
             liftMotors.move_voltage(6000);
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
@@ -85,7 +105,6 @@ void opcontrol() {
             liftMotors.brake();
         }
 
-        // ---------- TOGGLE ----------
         bool aPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
         bool bPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
 
@@ -103,7 +122,6 @@ void opcontrol() {
         }
         wasAPressed = aPressed;
 
-        // ---------- CLAW ----------
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
             clawMotors.move_voltage(6000);
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
