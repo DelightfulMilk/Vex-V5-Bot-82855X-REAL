@@ -91,9 +91,9 @@ void opcontrol() {
         rightMotors.move(rightPower * 0.8);
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            liftMotors.move_voltage(4500);
+            liftMotors.move_voltage(9000);
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            liftMotors.move_voltage(-4500);
+            liftMotors.move_voltage(-9000);
         } else {
             liftMotors.brake();
         }
