@@ -68,14 +68,6 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    toggleMotor.move_voltage(4500);
-    pros::delay(1000);
-    toggleMotor.move_voltage(0);
-    leftMotors.move_voltage(4500);
-    rightMotors.move_voltage(4500);
-    pros::delay(1000);
-    leftMotors.move_voltage(0);
-    rightMotors.move_voltage(0);
 }
 
 void opcontrol() {
@@ -95,8 +87,8 @@ void opcontrol() {
         if (rightPower > 127) rightPower = 127;
         if (rightPower < -127) rightPower = -127;
 
-        leftMotors.move(leftPower * 0.75);
-        rightMotors.move(rightPower * 0.75);
+        leftMotors.move(leftPower * 0.8);
+        rightMotors.move(rightPower * 0.8);
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
             liftMotors.move_voltage(4500);
