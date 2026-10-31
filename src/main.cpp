@@ -54,6 +54,7 @@ void initialize() {
     chassis.calibrate(); // calibrate the chassis sensors
     clawMotors.tare_position();
     toggleMotor.tare_position();
+    liftMotors.tare_position();
 }
 
 void disabled() {}
@@ -84,12 +85,14 @@ void opcontrol() {
         int leftY = -controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = -controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
+        // ADJUST DRIVETRAIN SPEED: Change the 0.5 below to adjust overall speed (e.g., 1.0 = full speed, 0.25 = quarter speed)
         int throttle = (leftY * 0.5);
         int turn = (rightX * 0.5);
 
         int leftPower = throttle + turn;
         int rightPower = throttle - turn;
 
+        // ADJUST DRIVETRAIN BALANCE: Change 0.95 to tweak how much slower the left side runs (e.g., 0.92 makes left slower, 0.98 makes it faster)
         leftPower = (int)(leftPower * 0.95);
 
         leftMotors.move(leftPower);
@@ -99,39 +102,48 @@ void opcontrol() {
 
         // lift up and down
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            if (lift_motor_pos < 350) { // limit lift up to 350 degrees
+            // ADJUST LIFT HEIGHT MAX: Change 350 to allow the lift to raise higher or stop lower
+            if (lift_motor_pos < 350) { 
                 liftMotors.move_voltage(12000);
             } else {
                 liftMotors.move_voltage(0);
             }
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            if (lift_motor_pos > 0) { // limit lift down to 0 degrees
+            // ADJUST LIFT HEIGHT MIN: Change 0 to adjust the lowest point the lift can travel down to
+            if (lift_motor_pos > 0) { 
                 liftMotors.move_voltage(-12000);
             } else {
                 liftMotors.move_voltage(0);
             }
         } else {
-            if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
-                toggleMotor.move_voltage(12000);
-            } else {
-                if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-                    bToggleState = !bToggleState;
-                    if (bToggleState) {
-                        toggleMotor.move_absolute(120, 200);
-                    } else {
-                        toggleMotor.move_absolute(0, 200);
-                    }
+            liftMotors.move_voltage(0);
+        }
+
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+            liftMotors.move_voltage(0);
+            toggleMotor.move_voltage(12000);
+        } else {
+            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+                bToggleState = !bToggleState;
+                if (bToggleState) {
+                    // ADJUST TOGGLE POSITION (FORWARD): Change 120 (degrees) and 200 (speed) to adjust the forward target
+                    toggleMotor.move_absolute(120, 200);
+                } else {
+                    // ADJUST TOGGLE POSITION (REVERSE): Change 0 (degrees) and 200 (speed) to adjust the reverse target
+                    toggleMotor.move_absolute(0, 200);
                 }
             }
         }
 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-            clawMotors.move_absolute(90, 200); // move claw to 90 degrees
+            // ADJUST CLAW CLOSE POSITION: Change 90 (degrees) and 200 (speed) to alter clamping range/speed
+            clawMotors.move_absolute(90, 200); 
             isClawClosed = 1;
         }
 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-            clawMotors.move_absolute(0, 200); // move claw to 0 degrees
+            // ADJUST CLAW OPEN POSITION: Change 0 (degrees) and 200 (speed) to alter opening range/speed
+            clawMotors.move_absolute(0, 200); 
             isClawClosed = 0;
         }
 
