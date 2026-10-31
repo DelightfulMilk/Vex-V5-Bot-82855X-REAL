@@ -5,7 +5,7 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup leftMotors({-1, -2}, pros::MotorGearset::blue);
 pros::MotorGroup rightMotors({3, 4}, pros::MotorGearset::blue);
-pros::MotorGroup clawMotors({-5}, pros::MotorGearset::green);
+pros::MotorGroup clawMotors({-6}, pros::MotorGearset::green);
 pros::MotorGroup liftMotors({7, -8}, pros::MotorGearset::red);
 pros::MotorGroup toggleMotor({9}, pros::MotorGearset::blue);
 
