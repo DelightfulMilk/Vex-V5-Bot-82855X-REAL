@@ -5,7 +5,6 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup leftMotors({1, 2}, pros::MotorGearset::blue); 
 pros::MotorGroup rightMotors({3, 4}, pros::MotorGearset::blue); 
 pros::MotorGroup clawMotors ({5}, pros::MotorGearset::green);
-pros::MotorGroup wristMotors ({6}, pros::MotorGearset::green);
 pros::MotorGroup liftMotors ({7, -8}, pros::MotorGearset::red);
 pros::MotorGroup toggleMotor ({9}, pros::MotorGearset::blue);
 
@@ -75,7 +74,6 @@ void opcontrol() {
     // loop to continuously update motors
 
     //sets to 0 degrees claw
-    wristMotors.tare_position();
     clawMotors.tare_position();
     
     //claw variables
