@@ -82,32 +82,25 @@ void opcontrol() {
         int leftPower = throttle + turn;
         int rightPower = throttle - turn;
 
-        leftMotors.move(leftPower);
+        leftMotors.move(leftPower * 0.95);
         rightMotors.move(rightPower);
 
-        double lift_motor_pos = liftMotors.get_position(0);
-
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            if (lift_motor_pos < 1200) {
                 liftMotors.move_voltage(12000);
             } else {
                 liftMotors.brake();
             }
-        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            if (lift_motor_pos > 0) {
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
                 liftMotors.move_voltage(-12000);
             } else {
                 liftMotors.brake();
             }
-        } else {
-            liftMotors.brake();
-        }
 
         bool aPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
         bool bPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
 
         if (bPressed) {
-            toggleMotor.move_voltage(12000);
+            toggleMotor.move_voltage(-12000);
             isAbsoluteTargetSet = false;
         } else {
             if (aPressed && !wasAPressed) {
@@ -123,12 +116,10 @@ void opcontrol() {
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
             clawMotors.move_voltage(6000);
-        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            clawMotors.move_voltage(-6000);
-        } else {
-            clawMotors.brake();
         }
-
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+            clawMotors.move_voltage(-6000);
+        }
         pros::delay(20);
     }
 }
