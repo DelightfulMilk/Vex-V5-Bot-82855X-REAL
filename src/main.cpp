@@ -7,6 +7,7 @@ pros::MotorGroup rightMotors({3, 4}, pros::MotorGearset::blue);
 pros::MotorGroup clawMotors ({5}, pros::MotorGearset::green);
 pros::MotorGroup liftMotors ({7, -8}, pros::MotorGearset::red);
 pros::MotorGroup toggleMotor ({9}, pros::MotorGearset::blue);
+pros::Motor liftTrack ({7}, pros::MotorGearset::red);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&leftMotors, 
@@ -85,9 +86,6 @@ void opcontrol() {
     int toggler = 0; // to
     int togglerhold = 0; 
 
-    double lift_motor_pos = liftMotors.get_position(0);
-    pros::lcd::print(6, "lift motors pos: %f", lift_motor_pos);
-
     while (true) {
         // get joystick positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -95,6 +93,9 @@ void opcontrol() {
         pros::lcd::print(1, "rightX: %d", rightX);
         pros::lcd::print(2, "leftY: %d", leftY);
         chassis.arcade(leftY, rightX);
+
+        double lift_motor_pos = liftTrack.get_position(0);
+        pros::lcd::print(6, "lift motors pos: %f", lift_motor_pos);
 
 		// lift up and down
 		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
