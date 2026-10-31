@@ -5,7 +5,7 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup leftMotors({-1, -2}, pros::MotorGearset::blue);
 pros::MotorGroup rightMotors({3, 4}, pros::MotorGearset::blue);
-pros::MotorGroup clawMotors ({5}, pros::MotorGearset::green);
+pros::MotorGroup clawMotors ({-5}, pros::MotorGearset::green);
 pros::MotorGroup liftMotors ({7, -8}, pros::MotorGearset::red);
 pros::MotorGroup toggleMotor ({9}, pros::MotorGearset::blue);
 
@@ -82,13 +82,11 @@ void opcontrol() {
         int leftPower = throttle + turn;
         int rightPower = throttle - turn;
 
-        leftMotors.move(leftPower * 0.95);
+        leftMotors.move(leftPower);
         rightMotors.move(rightPower);
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
                 liftMotors.move_voltage(12000);
-            } else {
-                liftMotors.brake();
             }
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
                 liftMotors.move_voltage(-12000);
