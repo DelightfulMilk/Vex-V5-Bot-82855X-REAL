@@ -90,7 +90,7 @@ void opcontrol() {
         int turn = (rightX * 0.5);
 
         int leftPower = throttle + turn;
-        int rightPower = throttle - turn;
+        int rightPower = throttle + turn;
 
         // change left power
         leftPower = (int)(leftPower * 0.90);
@@ -102,8 +102,8 @@ void opcontrol() {
 
         // lift up and down
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            // max height 350
-            if (lift_motor_pos < 350) { 
+            // max height 1200
+            if (lift_motor_pos < 1200) { 
                 liftMotors.move_voltage(12000);
             } else {
                 liftMotors.move_voltage(0);
@@ -130,20 +130,20 @@ void opcontrol() {
                     toggleMotor.move_absolute(120, 200);
                 } else {
                     // toggle not
-                    toggleMotor.move_absolute(0, 200);
+                    toggleMotor.move_voltage(0);
                 }
             }
         }
 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
             // move to close
-            clawMotors.move_absolute(90, 200); 
+            clawMotors.move_voltage(6000); 
             isClawClosed = 1;
         }
 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
             // move to open
-            clawMotors.move_absolute(0, 200); 
+            clawMotors.move_voltage(-6000); 
             isClawClosed = 0;
         }
 
