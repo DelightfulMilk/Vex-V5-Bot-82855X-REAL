@@ -47,12 +47,12 @@ lemlib::Chassis chassis(drivetrain,
 void initialize() {
     pros::lcd::initialize();
     chassis.calibrate();
-    clawMotors.tare_position();
-    toggleMotor.tare_position();
-    liftMotors.tare_position();
-    clawMotors.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-    liftMotors.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-    toggleMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    clawMotors.tare_position_all();
+    toggleMotor.tare_position_all();
+    liftMotors.tare_position_all();
+    clawMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+    liftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+    toggleMotor.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
 }
 
 void disabled() {}
@@ -88,19 +88,19 @@ void opcontrol() {
         double lift_motor_pos = liftMotors.get_position(0);
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            if (lift_motor_pos < 1200) { 
+            if (lift_motor_pos < 1200) {
                 liftMotors.move_voltage(12000);
             } else {
-                liftMotors.move_voltage(0);
+                liftMotors.brake();
             }
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            if (lift_motor_pos > 0) { 
+            if (lift_motor_pos > 0) {
                 liftMotors.move_voltage(-12000);
             } else {
-                liftMotors.move_voltage(0);
+                liftMotors.brake();
             }
         } else {
-            liftMotors.move_voltage(0);
+            liftMotors.brake();
         }
 
         bool aPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
@@ -114,19 +114,19 @@ void opcontrol() {
                 toggleMotor.move_absolute(120, 200);
                 isAbsoluteTargetSet = true;
             }
-            wasAPressed = aPressed;
 
             if (!isAbsoluteTargetSet) {
-                toggleMotor.move_voltage(0);
+                toggleMotor.brake();
             }
         }
+        wasAPressed = aPressed;
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            clawMotors.move_voltage(6000); 
+            clawMotors.move_voltage(6000);
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            clawMotors.move_voltage(-6000); 
+            clawMotors.move_voltage(-6000);
         } else {
-            clawMotors.move_voltage(0);
+            clawMotors.brake();
         }
 
         pros::delay(20);
