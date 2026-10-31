@@ -124,9 +124,9 @@ void opcontrol() {
         wasAPressed = aPressed;
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            clawMotors.move_voltage(4500);
+            clawMotors.move_voltage(9000);
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            clawMotors.move_voltage(-4500);
+            clawMotors.move_voltage(-9000);
         } else {
             clawMotors.brake();
         }
