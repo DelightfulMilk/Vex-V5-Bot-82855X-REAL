@@ -87,6 +87,11 @@ void opcontrol() {
     int toggler = 0; // to
     int togglerhold = 0; 
 
+    // get the rotation of the stuff
+
+    double lift_motor_pos = liftMotors.get_position(0);
+    pros::lcd::print(6, "lift motors pos: %f", lift_motor_pos);
+
     while (true) {
         // get joystick positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -96,10 +101,18 @@ void opcontrol() {
         chassis.arcade(leftY, rightX);
 
 		// lift up and down
-		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-			liftMotors.move_voltage(-12000);
-		} else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            liftMotors.move_voltage(12000);
+		if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+			if (lift_motor_pos < 350) { // limit lift up to 350 degrees
+                liftMotors.move_voltage(12000);
+            } else {
+                liftMotors.move_voltage(0);
+            }
+		} else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+            if (lift_motor_pos > 0) { // limit lift down to 0 degrees
+                liftMotors.move_voltage(-12000);
+            } else {
+                liftMotors.move_voltage(0);
+            }
             }
 		else {
 			liftMotors.move_voltage(0);
