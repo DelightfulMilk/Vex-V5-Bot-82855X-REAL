@@ -91,6 +91,7 @@ void opcontrol() {
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         pros::lcd::print(1, "rightX: %d", rightX);
         pros::lcd::print(2, "leftY: %d", leftY);
+        pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
         chassis.arcade(leftY, rightX);
 
         // get the rotation of lift
@@ -151,13 +152,11 @@ void opcontrol() {
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
             // clawMotors.move_absolute(90, 200); // move claw to 90 degrees
             isClawClosed = 1;
-            pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
             pros::delay(100);
         } 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
             // clawMotors.move_absolute(0, 200); // move claw to 0 degrees
             isClawClosed = 0;
-            pros::lcd::print(5, "isClawClosed: %d", isClawClosed);
             pros::delay(100);
         }
 
