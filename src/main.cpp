@@ -11,7 +11,7 @@ pros::MotorGroup toggleMotor({9}, pros::MotorGearset::blue);
 
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 13,
                               lemlib::Omniwheel::OLD_325,
-                              180,
+                              90,
                               2
 );
 
