@@ -78,8 +78,8 @@ void opcontrol() {
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        int throttle = expoCurve(leftY, THROTTLE_DEADBAND, THROTTLE_MIN_OUT, THROTTLE_CURVE) * 0.5;
-        int turn     = expoCurve(rightX, TURN_DEADBAND, TURN_MIN_OUT, TURN_CURVE) * 0.5;
+        int throttle = expoCurve(leftY, THROTTLE_DEADBAND, THROTTLE_MIN_OUT, THROTTLE_CURVE) * 0.75;
+        int turn     = expoCurve(rightX, TURN_DEADBAND, TURN_MIN_OUT, TURN_CURVE) * 0.75;
 
         int leftPower = (throttle + turn); // these 2 are swapped
         int rightPower = (throttle - turn);
@@ -87,8 +87,8 @@ void opcontrol() {
         if (rightPower > 127) rightPower = 127;
         if (rightPower < -127) rightPower = -127;
 
-        leftMotors.move(leftPower * 1.2);
-        rightMotors.move(rightPower * 0.8);
+        leftMotors.move(leftPower);
+        rightMotors.move(rightPower * 0.95);
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
             liftMotors.move_voltage(4500);
