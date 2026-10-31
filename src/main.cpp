@@ -54,6 +54,7 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
+    chassis.calibrate(); // calibrate the chassis sensors
 }
 
 void disabled() {}
