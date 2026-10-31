@@ -68,11 +68,11 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    toggleMotor.move_voltage(6000);
-    pros::delay(200);
-    leftMotors.move_voltage(12000);
-    rightMotors.move_voltage(12000);
-    pros::delay(2000);
+    toggleMotor.move_voltage(4500);
+    pros::delay(1000);
+    leftMotors.move_voltage(4500);
+    rightMotors.move_voltage(4500);
+    pros::delay(1000);
     leftMotors.move_voltage(0);
     rightMotors.move_voltage(0);
 }
