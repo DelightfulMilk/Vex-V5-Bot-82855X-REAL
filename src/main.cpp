@@ -51,6 +51,8 @@ void initialize() {
     toggleMotor.tare_position();
     liftMotors.tare_position();
     clawMotors.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    liftMotors.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    toggleMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
 void disabled() {}
@@ -61,14 +63,14 @@ void autonomous() {
     toggleMotor.move_absolute(120, 200);
     leftMotors.move_voltage(12000);
     rightMotors.move_voltage(12000);
+    pros::delay(1000);
+    leftMotors.move_voltage(0);
+    rightMotors.move_voltage(0);
 }
 
 void opcontrol() {
-    int isClawClosed = 0;
-    bool bToggleState = false;
-    int toggler = 0;
-    int togglerhold = 0;
     bool wasAPressed = false;
+    bool isAbsoluteTargetSet = false;
 
     while (true) {
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -101,42 +103,30 @@ void opcontrol() {
             liftMotors.move_voltage(0);
         }
 
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
-            togglerhold = 1;
-        } else {
-            togglerhold = 0;
-        }
+        bool aPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
+        bool bPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
 
-        if (togglerhold == 1) {
+        if (bPressed) {
             toggleMotor.move_voltage(12000);
+            isAbsoluteTargetSet = false;
         } else {
-            if (toggler == 0) {
-                if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-                    if (!wasAPressed) {
-                        toggler = 1;
-                        wasAPressed = true;
-                    }
-                } else {
-                    wasAPressed = false;
-                }
-            }
-            
-            if (toggler == 1) {
+            if (aPressed && !wasAPressed) {
                 toggleMotor.move_absolute(120, 200);
-                toggler = 0;
-            } else {
+                isAbsoluteTargetSet = true;
+            }
+            wasAPressed = aPressed;
+
+            if (!isAbsoluteTargetSet) {
                 toggleMotor.move_voltage(0);
             }
         }
 
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
             clawMotors.move_voltage(6000); 
-            isClawClosed = 1;
-        }
-
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
             clawMotors.move_voltage(-6000); 
-            isClawClosed = 0;
+        } else {
+            clawMotors.move_voltage(0);
         }
 
         pros::delay(20);
