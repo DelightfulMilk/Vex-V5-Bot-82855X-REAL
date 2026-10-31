@@ -92,8 +92,8 @@ void opcontrol() {
         int leftPower = throttle + turn;
         int rightPower = throttle - turn;
 
-        // ADJUST DRIVETRAIN BALANCE: Change 0.95 to tweak how much slower the left side runs (e.g., 0.92 makes left slower, 0.98 makes it faster)
-        leftPower = (int)(leftPower * 0.95);
+        // ADJUST LEFT POWER change 0.90 to something else
+        leftPower = (int)(leftPower * 0.90);
 
         leftMotors.move(leftPower);
         rightMotors.move(rightPower);
