@@ -78,22 +78,22 @@ void opcontrol() {
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        int throttle = expoCurve(leftY, THROTTLE_DEADBAND, THROTTLE_MIN_OUT, THROTTLE_CURVE);
-        int turn = expoCurve(rightX, TURN_DEADBAND, TURN_MIN_OUT, TURN_CURVE);
+        int throttle = expoCurve(leftY, THROTTLE_DEADBAND, THROTTLE_MIN_OUT, THROTTLE_CURVE) * 0.5;
+        int turn = expoCurve(rightX, TURN_DEADBAND, TURN_MIN_OUT, TURN_CURVE) * 0.5;
 
         int leftPower = throttle + turn;
-        int rightPower = (throttle - turn);
+        int rightPower = (throttle - turn) * 1.5;
 
         if (rightPower > 127) rightPower = 127;
         if (rightPower < -127) rightPower = -127;
 
-        leftMotors.move(leftPower);
-        rightMotors.move(rightPower);
+        leftMotors.move(leftPower * 0.8);
+        rightMotors.move(rightPower * 0.8);
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            liftMotors.move_voltage(5000);
+            liftMotors.move_voltage(4500);
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            liftMotors.move_voltage(-5000);
+            liftMotors.move_voltage(-4500);
         } else {
             liftMotors.brake();
         }
