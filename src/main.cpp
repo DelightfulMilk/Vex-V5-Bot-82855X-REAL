@@ -80,6 +80,9 @@ void opcontrol() {
 
     int isClawClosed = 0;
     bool bToggleState = false;
+    int toggler = 0;
+    int togglerhold = 0;
+    bool wasAPressed = false;
 
     while (true) {
         int leftY = -controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
@@ -90,10 +93,7 @@ void opcontrol() {
         int turn = (rightX * 0.5);
 
         int leftPower = throttle + turn;
-        int rightPower = throttle + turn;
-
-        // change left power
-        leftPower = (int)(leftPower * 0.90);
+        int rightPower = throttle - turn;
 
         leftMotors.move(leftPower);
         rightMotors.move(rightPower);
@@ -119,21 +119,29 @@ void opcontrol() {
             liftMotors.move_voltage(0);
         }
 
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
-            liftMotors.move_voltage(0);
-            toggleMotor.move_voltage(12000);
-        } else {
-            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-                bToggleState = !bToggleState;
-                if (bToggleState) {
-                    // move the toggle one rotation
-                    toggleMotor.move_absolute(120, 200);
-                } else {
-                    // toggle not
-                    toggleMotor.move_voltage(0);
-                }
-            }
-        }
+       if (toggler == 0) { 
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) { 
+        if (!wasAPressed) { 
+        toggler = toggler + 1; // wasAPressed = true; // lock 
+            } 
+        } else { 
+wasAPressed = false; 
+} 
+        } else if (toggler >= 1) { 
+        toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees 
+        toggler = toggler - 1; 
+        } 
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_B)) { 
+togglerhold = 1; 
+} else { 
+togglerhold = 0; 
+} 
+if (togglerhold == 1) { 
+toggleMotor.move_voltage(12000); 
+} else if (togglerhold == 0) { 
+toggleMotor.move_voltage(0); 
+} 
+
 
         if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
             // move to close
