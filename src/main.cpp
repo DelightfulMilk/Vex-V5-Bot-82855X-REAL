@@ -70,6 +70,7 @@ void competition_initialize() {}
 void autonomous() {
     toggleMotor.move_voltage(4500);
     pros::delay(1000);
+    toggleMotor.move_voltage(0);
     leftMotors.move_voltage(4500);
     rightMotors.move_voltage(4500);
     pros::delay(1000);
