@@ -82,7 +82,7 @@ void opcontrol() {
         int turn     = expoCurve(rightX, TURN_DEADBAND, TURN_MIN_OUT, TURN_CURVE) * 0.5;
 
         int leftPower = throttle + turn;
-        int rightPower = (throttle - turn) * 1.5;
+        int rightPower = (throttle - turn) * 1.8;
 
         if (rightPower > 127) rightPower = 127;
         if (rightPower < -127) rightPower = -127;
