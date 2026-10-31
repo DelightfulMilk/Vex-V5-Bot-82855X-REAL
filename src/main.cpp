@@ -5,9 +5,9 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup leftMotors({-1, -2}, pros::MotorGearset::blue);
 pros::MotorGroup rightMotors({3, 4}, pros::MotorGearset::blue);
-pros::MotorGroup clawMotors ({-5}, pros::MotorGearset::green);
-pros::MotorGroup liftMotors ({7, -8}, pros::MotorGearset::red);
-pros::MotorGroup toggleMotor ({9}, pros::MotorGearset::blue);
+pros::MotorGroup clawMotors({-5}, pros::MotorGearset::green);
+pros::MotorGroup liftMotors({7, -8}, pros::MotorGearset::red);
+pros::MotorGroup toggleMotor({9}, pros::MotorGearset::blue);
 
 lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 13,
                               lemlib::Omniwheel::OLD_325,
@@ -15,26 +15,13 @@ lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 13,
                               2
 );
 
-lemlib::ExpoDriveCurve throttle_curve(3,
-                                      10,
-                                      1.019
-);
-
-lemlib::ExpoDriveCurve steer_curve(3,
-                                   10,
-                                   1.019
-);
+lemlib::ExpoDriveCurve throttle_curve(3, 10, 1.019);
+lemlib::ExpoDriveCurve steer_curve(3, 10, 1.019);
 
 lemlib::ControllerSettings lateral_controller(0, 0, 0, 0, 0, 0, 0, 0, 0);
 lemlib::ControllerSettings angular_controller(0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-lemlib::OdomSensors sensors(
-    nullptr,
-    nullptr,
-    nullptr,
-    nullptr,
-    nullptr
-);
+lemlib::OdomSensors sensors(nullptr, nullptr, nullptr, nullptr, nullptr);
 
 lemlib::Chassis chassis(drivetrain,
                         lateral_controller,
@@ -73,27 +60,32 @@ void opcontrol() {
     bool isAbsoluteTargetSet = false;
 
     while (true) {
+        // ---------- DRIVE ----------
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        int throttle = (leftY * 0.5);
-        int turn = (rightX * 0.5);
+        int throttle = leftY * 0.5;
+        int turn = rightX * 0.5;
 
         int leftPower = throttle + turn;
-        int rightPower = throttle - turn;
+        int rightPower = (throttle - turn) * 1.5;
+
+        if (rightPower > 127) rightPower = 127;
+        if (rightPower < -127) rightPower = -127;
 
         leftMotors.move(leftPower);
         rightMotors.move(rightPower);
 
+        // ---------- LIFT ----------
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-                liftMotors.move_voltage(12000);
-            }
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-                liftMotors.move_voltage(-12000);
-            } else {
-                liftMotors.brake();
-            }
+            liftMotors.move_voltage(12000);
+        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+            liftMotors.move_voltage(-12000);
+        } else {
+            liftMotors.brake();
+        }
 
+        // ---------- TOGGLE ----------
         bool aPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
         bool bPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
 
@@ -105,19 +97,21 @@ void opcontrol() {
                 toggleMotor.move_absolute(120, 200);
                 isAbsoluteTargetSet = true;
             }
-
             if (!isAbsoluteTargetSet) {
                 toggleMotor.brake();
             }
         }
         wasAPressed = aPressed;
 
+        // ---------- CLAW ----------
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            clawMotors.move_voltage(6000);
+            clawMotors.move_voltage(12000);
+        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+            clawMotors.move_voltage(-12000);
+        } else {
+            clawMotors.brake();
         }
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            clawMotors.move_voltage(-6000);
-        }
+
         pros::delay(20);
     }
 }
