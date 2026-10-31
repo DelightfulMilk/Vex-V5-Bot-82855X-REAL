@@ -78,9 +78,9 @@ void opcontrol() {
 
         // ---------- LIFT ----------
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            liftMotors.move_voltage(12000);
+            liftMotors.move_voltage(6000);
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            liftMotors.move_voltage(-12000);
+            liftMotors.move_voltage(-6000);
         } else {
             liftMotors.brake();
         }
@@ -90,7 +90,7 @@ void opcontrol() {
         bool bPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
 
         if (bPressed) {
-            toggleMotor.move_voltage(-12000);
+            toggleMotor.move_voltage(-6000);
             isAbsoluteTargetSet = false;
         } else {
             if (aPressed && !wasAPressed) {
@@ -105,9 +105,9 @@ void opcontrol() {
 
         // ---------- CLAW ----------
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            clawMotors.move_voltage(12000);
+            clawMotors.move_voltage(6000);
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            clawMotors.move_voltage(-12000);
+            clawMotors.move_voltage(-6000);
         } else {
             clawMotors.brake();
         }
