@@ -85,6 +85,9 @@ void opcontrol() {
     int toggler = 0; // to
     int togglerhold = 0; 
 
+    double lift_motor_pos = liftMotors.get_position(0);
+    pros::lcd::print(6, "lift motors pos: %f", lift_motor_pos);
+
     while (true) {
         // get joystick positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
