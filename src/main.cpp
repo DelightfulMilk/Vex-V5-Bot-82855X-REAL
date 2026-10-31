@@ -3,7 +3,7 @@
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup leftMotors({1, 2}, pros::MotorGearset::blue); 
-pros::MotorGroup rightMotors({3, 4}, pros::MotorGearset::blue); 
+pros::MotorGroup rightMotors({-3, -4}, pros::MotorGearset::blue); 
 pros::MotorGroup clawMotors ({5}, pros::MotorGearset::green);
 pros::MotorGroup liftMotors ({7, -8}, pros::MotorGearset::red);
 pros::MotorGroup toggleMotor ({9}, pros::MotorGearset::blue);
@@ -13,7 +13,7 @@ lemlib::Drivetrain drivetrain(&leftMotors,
 &rightMotors, 
 13, // 13 inch track width
 lemlib::Omniwheel::OLD_325, // using old 3.25" omnis
-360, // drivetrain rpm is 360
+180, // drivetrain rpm is 180
 2 // trac wheels = 0, horizontal drift offset
 );
 
@@ -124,7 +124,6 @@ void opcontrol() {
         }
         else if (toggler >= 1) {
             toggleMotor.move_absolute(120, 200); // move toggle to 120 degrees
-            pros::delay(100);
             toggler = toggler - 1;
         }
     
