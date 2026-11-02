@@ -68,17 +68,27 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
+    // 0.6096m move 1 tile at 4500V
+    // bot moves at appox. 0.96m/s
+    // 635ms to move 1 tile
+    // move toggle for approx 165ms to toggle once
+while (true) {
     toggleMotor.move_voltage(4500);
-    leftMotors.move_voltage(9000);
-    rightMotors.move_voltage(9000);
-    pros::delay(2000);
-    leftMotors.move_voltage(9000);
-    rightMotors.move_voltage(0);
-    pros::delay(500);
-    rightMotors.move_voltage(9000);
-    pros::delay(2000);
-    leftMotors.move_voltage(0);
-    rightMotors.move_voltage(0);
+    pros::delay(165);
+    toggleMotor.brake();
+    leftMotors.move_voltage(4500);
+    rightMotors.move_voltage(4500);
+    pros::delay(1200);
+    leftMotors.brake();
+    rightMotors.brake();
+    clawMotors.move_voltage(9000);
+    pros::delay(1200);
+    clawMotors.brake();
+    liftMotors.move_voltage(4500);
+    pros::delay(1200);
+    liftMotors.move_voltage(-4500);
+    pros::delay(1200);
+}
 }
 
 void opcontrol() {
