@@ -2,65 +2,71 @@
 #include "lemlib/api.hpp"
 #include <cmath>
 
+// 1. Define motor groups once with proper port directions and gearsets
+// Negative port numbers reverse the motor direction
+pros::MotorGroup left_motors({1}, pros::MotorGearset::blue);   // 600 RPM cartridges
+pros::MotorGroup right_motors({-18}, pros::MotorGearset::blue); // 600 RPM cartridges
+pros::MotorGroup liftMotor({10}, pros::MotorGearset::green); // RPM cartridges
+
+// 2. Drivetrain settings (matching the exact variable names above)
+lemlib::Drivetrain drivetrain(&left_motors, // left motor group
+                              &right_motors, // right motor group
+                              9.75, // 9.75 inch track width
+                              lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
+                              200, // drivetrain rpm is 200
+                              1 // horizontal drift is 2 (for now)
+);
+
+// 3. Create sensors
+pros::Imu imu(16);
+pros::Rotation rotation_sensor(20);
+
+// odometry settings
+lemlib::OdomSensors sensors(&vertical_tracking_wheel, // vertical tracking wheel 1, set to null
+                            nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
+                            nullptr, // horizontal tracking wheel 1
+                            nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
+                            &imu // inertial sensor
+);
+
+// lateral PID controller
+lemlib::ControllerSettings lateral_controller(10, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              3, // derivative gain (kD)
+                                              3, // anti windup
+                                              1, // small error range, in inches
+                                              100, // small error range timeout, in milliseconds
+                                              3, // large error range, in inches
+                                              500, // large error range timeout, in milliseconds
+                                              20 // maximum acceleration (slew)
+);
+
+// angular PID controller
+lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              10, // derivative gain (kD)
+                                              3, // anti windup
+                                              1, // small error range, in degrees
+                                              100, // small error range timeout, in milliseconds
+                                              3, // large error range, in degrees
+                                              500, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
+);
+
+// create the chassis
+lemlib::Chassis chassis(drivetrain, // drivetrain settings
+                        lateral_controller, // lateral PID settings
+                        angular_controller, // angular PID settings
+                        sensors // odometry sensors
+);
+
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup leftMotors({-1, -2}, pros::MotorGearset::blue);
-pros::MotorGroup rightMotors({3, 4}, pros::MotorGearset::blue);
-pros::MotorGroup clawMotors({-6}, pros::MotorGearset::green);
-pros::MotorGroup liftMotors({7, -8}, pros::MotorGearset::red);
-pros::MotorGroup toggleMotor({9}, pros::MotorGearset::blue);
 
-lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 13,
-                              lemlib::Omniwheel::OLD_325,
-                              45,
-                              2
-);
-
-lemlib::ExpoDriveCurve throttle_curve(3, 10, 1.019);
-lemlib::ExpoDriveCurve steer_curve(3, 10, 1.019);
-
-lemlib::ControllerSettings lateral_controller(0, 0, 0, 0, 0, 0, 0, 0, 0);
-lemlib::ControllerSettings angular_controller(0, 0, 0, 0, 0, 0, 0, 0, 0);
-
-lemlib::OdomSensors sensors(nullptr, nullptr, nullptr, nullptr, nullptr);
-
-lemlib::Chassis chassis(drivetrain,
-                        lateral_controller,
-                        angular_controller,
-                        sensors,
-                        &throttle_curve,
-                        &steer_curve
-);
-
-const int    THROTTLE_DEADBAND = 3;
-const int    THROTTLE_MIN_OUT  = 10;
-const double THROTTLE_CURVE    = 1.019;
-
-const int    TURN_DEADBAND = 3;
-const int    TURN_MIN_OUT  = 10;
-const double TURN_CURVE    = 1.019;
-
-int expoCurve(int input, int deadband, int minOutput, double curve) {
-    if (std::abs(input) <= deadband) return 0;
-
-    int sign = (input > 0) ? 1 : -1;
-    double x = std::abs(input);
-
-    double curved = std::pow(curve, x - 127) * x;
-    double output = minOutput + (127.0 - minOutput) * curved / 127.0;
-
-    return sign * (int)output;
-}
-
+// initialize function. Runs on program startup
 void initialize() {
-    pros::lcd::initialize();
-    chassis.calibrate();
-    clawMotors.tare_position_all();
-    toggleMotor.tare_position_all();
-    liftMotors.tare_position_all();
-    clawMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
-    liftMotors.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
-    toggleMotor.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+    pros::lcd::initialize(); // initialize brain screen
+    chassis.calibrate(); // calibrate sensors
 }
 
 void disabled() {}
@@ -68,82 +74,28 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    // 0.6096m move 1 tile at 4500V
-    // bot moves at appox. 0.96m/s
-    // 635ms to move 1 tile
-    // move toggle for approx 165ms to toggle once
-while (true) {
-    toggleMotor.move_voltage(4500);
-    pros::delay(165);
-    toggleMotor.brake();
-    leftMotors.move_voltage(4500);
-    rightMotors.move_voltage(4500);
-    pros::delay(1200);
-    leftMotors.brake();
-    rightMotors.brake();
-    clawMotors.move_voltage(9000);
-    pros::delay(1200);
-    clawMotors.brake();
-    liftMotors.move_voltage(4500);
-    pros::delay(1200);
-    liftMotors.move_voltage(-4500);
-    pros::delay(1200);
 }
-}
+
 
 void opcontrol() {
-    bool wasAPressed = false;
-    bool isAbsoluteTargetSet = false;
-
+    // loop forever
     while (true) {
+        // get left y and right y positions
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
 
-        int throttle = expoCurve(leftY, THROTTLE_DEADBAND, THROTTLE_MIN_OUT, THROTTLE_CURVE) * 0.5;
-        int turn     = expoCurve(rightX, TURN_DEADBAND, TURN_MIN_OUT, TURN_CURVE) * 0.5;
+        // move the robot
+        chassis.tank(leftY, rightY);
 
-        int leftPower = (throttle + turn); // these 2 are swapped
-        int rightPower = (throttle - turn);
-
-        if (rightPower > 127) rightPower = 127;
-        if (rightPower < -127) rightPower = -127;
-
-        leftMotors.move(leftPower);
-        rightMotors.move(rightPower * 0.95);
+        // delay to save resources
+        pros::delay(25);
 
         if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            liftMotors.move_voltage(4500);
+            liftMotor.move_velocity(200);
         } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            liftMotors.move_voltage(-4500);
+            liftMotor.move_velocity(-200);
         } else {
-            liftMotors.brake();
+            liftMotor.move_velocity(0);
         }
-
-        bool aPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
-        bool bPressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
-
-        if (bPressed) {
-            toggleMotor.move_voltage(-4500);
-            isAbsoluteTargetSet = false;
-        } else {
-            if (aPressed && !wasAPressed) {
-                toggleMotor.move_absolute(120, 200);
-                isAbsoluteTargetSet = true;
-            }
-            if (!isAbsoluteTargetSet) {
-                toggleMotor.brake();
-            }
-        }
-        wasAPressed = aPressed;
-
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            clawMotors.move_voltage(9000);
-        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-            clawMotors.move_voltage(-9000);
-        } else {
-            clawMotors.brake();
-        }
-
-        pros::delay(20);
     }
 }
